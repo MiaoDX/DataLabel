@@ -1,0 +1,41 @@
+{
+  "shapes": [
+    {
+      "label": "obj_class",
+      "line_color": null,
+      "fill_color": null,
+      "points": [
+        [
+          50.0,
+          50.0
+        ],
+        [
+          200.0,
+          50.0
+        ],
+        [
+          200.0,
+          200.0
+        ],
+        [
+          50.0,
+          200.0
+        ]
+      ]
+    }
+  ],
+  "lineColor": [
+    0,
+    255,
+    0,
+    128
+  ],
+  "fillColor": [
+    255,
+    0,
+    0,
+    128
+  ],
+  "imagePath": "00000.png",
+  "imageData": "ready_to_be_replaced"
+}
