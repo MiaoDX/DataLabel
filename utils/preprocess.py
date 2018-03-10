@@ -5,7 +5,7 @@ from tqdm import tqdm
 import json_tricks
 from os.path import abspath, basename
 
-def split_video(source='1.mp4', directory='tmp', im_name_format="{:05d}.png"):
+def split_video(source='1.mp4', split_dir='tmp', im_name_format="{:05d}.png"):
 
     cam = cv2.VideoCapture(source)
     # If Camera Device is not opened, exit the program
@@ -16,29 +16,18 @@ def split_video(source='1.mp4', directory='tmp', im_name_format="{:05d}.png"):
     frame_length = int(cam.get(cv2.CAP_PROP_FRAME_COUNT))
     print("total frames num:{}".format(frame_length))
 
-
-    if os.path.isdir(directory):
-        in_cmd = input("Seems the directory is not empty, be careful, press `c` to continue, others will terminate the program")
-        if not in_cmd == 'c':
-            exit()
-
-        print("Using existing dir:{}".format(directory))
-    else:
-        print("Create dir {} for splited images".format(directory))
-        os.makedirs(directory)
-
     for i in tqdm(range(frame_length)):
         retval, img = cam.read()
         if not retval:
             print ("Cannot capture frame device | CODE TERMINATING :(")
             exit()
 
-        cv2.imwrite(directory+'/'+im_name_format.format(i), img)
+        cv2.imwrite(split_dir+'/'+im_name_format.format(i), img)
 
-    print("Split the video at {} done.".format(directory))
+    print("Split the video at {} done.".format(split_dir))
 
 
-def variance_of_laplacian(image):
+def _variance_of_laplacian(image):
     # compute the Laplacian of the image and then return the focus
     # measure, which is simply the variance of the Laplacian
     image = image.copy()
@@ -46,7 +35,7 @@ def variance_of_laplacian(image):
     gray = cv2.cvtColor(image, cv2.COLOR_BGR2GRAY)
     return cv2.Laplacian(gray, cv2.CV_64F).var()
 
-def is_blur(image, thres=100):
+def _is_blur(image, thres=100):
     """
     Simply detect the image is blur or not, ref https://www.pyimagesearch.com/2015/09/07/blur-detection-with-opencv/
     The `thres` is somewhat casually picked, may need better analyse the images
@@ -54,55 +43,66 @@ def is_blur(image, thres=100):
     # compute the Laplacian of the image and then return the focus
     # measure, which is simply the variance of the Laplacian
 
-    v_l = variance_of_laplacian(image)
+    v_l = _variance_of_laplacian(image)
     if v_l <= thres:
         return True
 
     return False
 
 
-def generate_des(data_dir='', file_name='1.png', des_dir='des'):
-    abs_file_name = data_dir+'/'+file_name
-    print("Deal with {}".format(abs_file_name))
-    assert os.path.isfile(abs_file_name)
-    assert os.path.isdir(des_dir)
+def generate_init_des(frame_dir, des_dir):
+    # assert os.path.isdir(frame_dir) and not os.path.isdir(des_dir)
 
-    im = cv2.imread(abs_file_name)
-    v_l = variance_of_laplacian(im)
+    all_frame_files = generate_all_abs_filenames(frame_dir)
 
-    des_f = des_dir + '/' + os.path.basename(file_name)[:-4] + '.json'
+    for frame_file in all_frame_files:
+        print("Deal with {}".format(frame_file))
+        f_basename, f_no_suffix = split_the_abs_filename(frame_file)
+        des_file = des_dir+'/'+f_no_suffix+'.json'
+        des_file = os.path.abspath(des_file)
 
-    info = dict()
-    info['data_dir_abs'] = os.path.abspath(data_dir)
-    info['file_name'] = file_name
-    info['variance_of_laplacian'] = v_l
+        assert os.path.isfile(frame_file) and not os.path.isfile(des_file)
 
-    with open(des_f, 'w') as f:
-        json_tricks.dump(info, f, sort_keys=True, indent=4)
+        im = cv2.imread(frame_file)
+        v_l = _variance_of_laplacian(im)
 
-def generate_all_filenames(data_dir):
-    files = [f for f in os.listdir(data_dir) if os.path.isfile(data_dir+'/'+f)]
+        info = dict()
+        info['abs_file_name'] = frame_file
+        info['variance_of_laplacian'] = v_l
+
+        with open(des_file, 'w') as f:
+            json_tricks.dump(info, f, sort_keys=True, indent=4)
+
+# def generate_all_filenames(data_dir):
+#     files = [f for f in os.listdir(data_dir) if os.path.isfile(data_dir+'/'+f)]
+#     return files
+
+def generate_all_abs_filenames(data_dir):
+    files = [os.path.abspath(data_dir+'/'+f) for f in os.listdir(data_dir) if os.path.isfile(data_dir+'/'+f)]
     return files
 
-def eval_blur(des_dir, eval_blur_flag=False, blur_thres=30, visualize=False):
-    des_files = generate_all_filenames(des_dir)
-    des_files = [f for f in des_files if f[-4:]=='json']
+def split_the_abs_filename(abs_filename):
+    f_basename = os.path.basename(abs_filename)
+    f_no_suffix = f_basename.split('.')[0]
+    return f_basename, f_no_suffix
+
+def eval_blur(des_dir, write_blur_flag_to_des=False, blur_thres=30, visualize=False):
+    des_files = generate_all_abs_filenames(des_dir)
     print(len(des_files))
 
     blur_l = []
     blur_num = 0
     for f in des_files:
-        f = des_dir + '/' + f
+
         with open(f, 'r') as f_r:
             info = json_tricks.load(f_r)
 
         blur_l.append(info['variance_of_laplacian'])
 
+        if write_blur_flag_to_des:
 
-        if eval_blur_flag:
-
-            im = cv2.imread(info['data_dir_abs'] + '/' + info['file_name'])
-            im_blur = is_blur(im, blur_thres)
+            im = cv2.imread(info['abs_file_name'])
+            im_blur = _is_blur(im, blur_thres)
 
             if im_blur:
                 blur_num += 1
@@ -113,7 +113,6 @@ def eval_blur(des_dir, eval_blur_flag=False, blur_thres=30, visualize=False):
             with open(f, 'w') as f_w:
                 info['is_blur'] = im_blur
                 json_tricks.dump(info, f_w, sort_keys=True, indent=4)
-
 
     import matplotlib.pyplot as plt
     plt.hist(blur_l, bins='auto')  # arguments are passed to np.histogram
@@ -147,7 +146,7 @@ def genera_files_for_labeling(des_dir):
 
 if __name__ == '__main__':
     v_f = 'C:/Users/miao/Pictures/cam_data/001.mp4'
-    # split_video(source=v_f, directory='tmp_001')
+    split_video(source=v_f, split_dir='tmp_001')
 
     data_dir = 'tmp_001'
     des_dir = 'tmp_001_des'
