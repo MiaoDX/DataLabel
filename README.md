@@ -36,6 +36,10 @@ combine the tracked BBox -> refine BBox (optional) ->
 train with ML detection algorithms
 ```
 
+#### NOTES
+
+* the object is out of the scene
+
 ## TODO
 
 * change format to dlib needed

@@ -1,9 +1,8 @@
-import numpy as np
 import cv2
 import os
 from tqdm import tqdm
 import json_tricks
-from os.path import abspath, basename
+
 
 def split_video(source='1.mp4', split_dir='tmp', im_name_format="{:05d}.png"):
 
@@ -121,16 +120,15 @@ def eval_blur(des_dir, write_blur_flag_to_des=False, blur_thres=30, visualize=Fa
 
     print("BLUR RATIO:{}".format(blur_num/len(blur_l)))
 
-def genera_files_for_labeling(des_dir):
-    des_files = generate_all_filenames(des_dir)
-    des_files = [f for f in des_files if f[-4:] == 'json']
+def genera_files_for_manual_labeling_with_labelme(des_dir, no_blur_step=20, blur_step=10):
+    des_files = generate_all_abs_filenames(des_dir)
     print(len(des_files))
 
     no_blur_l = []
     blur_l = []
 
     for f in des_files:
-        f = des_dir + '/' + f
+
         with open(f, 'r') as f_r:
             info = json_tricks.load(f_r)
 
@@ -139,8 +137,8 @@ def genera_files_for_labeling(des_dir):
         else:
             no_blur_l.append(f)
 
-    no_blur_l = no_blur_l[::20]
-    blur_l = blur_l[::10]
+    no_blur_l = no_blur_l[::no_blur_step]
+    blur_l = blur_l[::blur_step]
     return no_blur_l, blur_l
 
 
@@ -153,7 +151,7 @@ if __name__ == '__main__':
     if not os.path.isdir(des_dir):
         os.makedirs(des_dir)
 
-    all_file = generate_all_filenames(data_dir)
+    all_file = generate_all_abs_filenames(data_dir)
     print(len(all_file))
 
     # for f in all_file:
@@ -162,7 +160,7 @@ if __name__ == '__main__':
     # eval_blur(des_dir=des_dir)
     # eval_blur(des_dir, eval_blur_flag=True, blur_thres=20, visualize=True)
 
-    no_blur_l, blur_l = genera_files_for_labeling(des_dir)
+    no_blur_l, blur_l = genera_files_for_manual_labeling_with_labelme(des_dir)
     print(len(no_blur_l), len(blur_l))
 
 
