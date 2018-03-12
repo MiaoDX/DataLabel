@@ -9,9 +9,9 @@ import random
 if __name__ == '__main__':
 
 
-    base_dir = 'H:/projects/icra_robomaster/codes/DataLabel/video_004/'
+    base_dir = 'H:/projects/icra_robomaster/codes/DataLabel/video_002/'
 
-    video_file = base_dir + '004.mp4'
+    video_file = base_dir + '002.mp4'
     frame_dir = base_dir + 'frames'
     des_dir = base_dir + 'description'
     manual_labeled_dir = base_dir + 'manual_labeled'
