@@ -112,8 +112,9 @@ def test_show_with_cv(test_folder, model_file="detector.svm"):
     # results.
     print("Showing detections on the images in the faces folder...")
     # cv2.namedWindow("Tracking")
+
     for f in glob.glob(os.path.join(test_folder, "*")):
-        # print("Processing file: {}".format(f))
+        print("Processing file: {}".format(f))
 
         img = cv2.imread(f)
         img = cv2.cvtColor(img, cv2.COLOR_BGR2RGB)
@@ -122,12 +123,12 @@ def test_show_with_cv(test_folder, model_file="detector.svm"):
 
         # print("Number of faces detected: {}".format(len(dets)))
 
-        det_rect = []
+
         for k, d in enumerate(dets):
             print("Detection {}: Left: {} Top: {} Right: {} Bottom: {}".format(
                 k, d.left(), d.top(), d.right(), d.bottom()))
             rect = [[d.left(), d.top()], [d.right(), d.top()], [d.right(), d.bottom()], d.left(), d.bottom()]
-            det_rect.append(rect)
+
             print(rect)
             cv2.rectangle(img, (d.left(), d.top()), (d.right(), d.bottom()), (0,0,255))
 
@@ -135,7 +136,6 @@ def test_show_with_cv(test_folder, model_file="detector.svm"):
         cv2.waitKey(1)
 
     cv2.destroyAllWindows()
-    return det_rect
 
 if __name__ == '__main__':
 
@@ -144,18 +144,18 @@ if __name__ == '__main__':
     # the path to this faces folder as a command line argument so we will know
     # where it is.
 
-    train_folder = 'H:/projects/icra_robomaster/codes/DataLabel/video_002/'
-    preffix = 'detection_manual'
+    train_folder = '/home/miao/dataset/video_002_half/'
+    preffix = 'detection_half'
 
     training_xml_path = train_folder + preffix + '.xml'
     save_model_file = train_folder + preffix + '.svm'
 
-    train(training_xml_path, save_model_file)
+    # train(training_xml_path, save_model_file)
 
-    """
-    base_dir_test = 'H:/projects/icra_robomaster/codes/DataLabel/video_002/'
+
+    # base_dir_test = 'H:/projects/icra_robomaster/codes/DataLabel/video_002/'
+    base_dir_test = '/home/miao/dataset/video_002/'
     frame_dir = base_dir_test + 'frames'
 
     # test(frame_dir, model_file=save_model_file)
     test_show_with_cv(frame_dir, model_file=save_model_file)
-    """

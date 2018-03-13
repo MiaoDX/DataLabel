@@ -9,7 +9,8 @@ import random
 if __name__ == '__main__':
 
 
-    base_dir = 'H:/projects/icra_robomaster/codes/DataLabel/video_002/'
+    #base_dir = 'H:/projects/icra_robomaster/codes/DataLabel/video_002/'
+    base_dir = '/home/miao/dataset/video_002/'
 
     video_file = base_dir + '002.mp4'
     frame_dir = base_dir + 'frames'
