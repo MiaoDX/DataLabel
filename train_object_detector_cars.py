@@ -137,6 +137,45 @@ def test_show_with_cv(test_folder, model_file="detector.svm"):
 
     cv2.destroyAllWindows()
 
+
+def test_show_with_cv_one(img, model_file="detector.svm"):
+    # Now let's use the detector as you would in a normal application.  First we
+    # will load it from disk.
+    detector = dlib.simple_object_detector(model_file)
+    # print(dir(detector))
+
+    # We can look at the HOG filter we learned.  It should look like a face.  Neat!
+    # win_det = dlib.image_window()
+    # win_det.set_image(detector)
+
+    img = cv2.cvtColor(img, cv2.COLOR_BGR2RGB)
+
+    dets = detector(img)
+
+    # print("Number of faces detected: {}".format(len(dets)))
+
+    for k, d in enumerate(dets):
+        print("Detection {}: Left: {} Top: {} Right: {} Bottom: {}".format(
+            k, d.left(), d.top(), d.right(), d.bottom()))
+        rect = [[d.left(), d.top()], [d.right(), d.top()], [d.right(), d.bottom()], d.left(), d.bottom()]
+
+        print(rect)
+        img = cv2.rectangle(img, (d.left(), d.top()), (d.right(), d.bottom()), (0,0,255))
+
+    # cv2.imshow('Tracking', img)
+    # cv2.waitKey(1)
+
+    # cv2.destroyAllWindows()
+    return img
+
+def pipeline_inference(img):
+    global save_model_file
+    img = test_show_with_cv_one(img, model_file=save_model_file)
+    cv2.imshow("A", img)
+    cv2.waitKey(1)
+    output = img
+    return output
+
 if __name__ == '__main__':
 
     # In this example we are going to train a face detector based on the small
@@ -144,8 +183,12 @@ if __name__ == '__main__':
     # the path to this faces folder as a command line argument so we will know
     # where it is.
 
-    train_folder = '/home/miao/dataset/video_002_half/'
-    preffix = 'detection_half'
+    #train_folder = '/home/miao/dataset/video_002_half/'
+    #preffix = 'detection_half'
+
+    train_folder = 'H:/projects/icra_robomaster/codes/DataLabel/pipeline_test/'
+    preffix = 'armer_200'
+
 
     training_xml_path = train_folder + preffix + '.xml'
     save_model_file = train_folder + preffix + '.svm'
@@ -158,4 +201,10 @@ if __name__ == '__main__':
     frame_dir = base_dir_test + 'frames'
 
     # test(frame_dir, model_file=save_model_file)
-    test_show_with_cv(frame_dir, model_file=save_model_file)
+    # test_show_with_cv(frame_dir, model_file=save_model_file)
+
+    from moviepy.editor import VideoFileClip
+    video_output = 'frame_002_with_{}.mp4'.format(preffix)
+    clip1 = VideoFileClip(train_folder+"/002.mp4")
+    clip = clip1.fl_image(pipeline_inference)
+    clip.write_videofile(video_output, audio=False)

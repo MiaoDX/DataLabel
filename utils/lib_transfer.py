@@ -81,13 +81,73 @@ def write_content_to_file(content, detection_file):
         f.write(end)
 
 
-def generate_dlib_detection_file_from_des(des_dir, only_manual_label=False, change_dir=False, resize=False, sample_num=100,
+def generate_voc_for_one(BBox: np.ndarray, im_file, label_name, voc_xml_dir):
+
+    print(im_file)
+
+    im = cv2.imread(im_file)
+    height, width, depth = im.shape
+
+    f_basename, f_no_suffix = preprocess.split_the_abs_filename(im_file)
+
+    start = """
+<annotation>
+<filename>{}</filename>
+<size>
+    <width>{}</width>
+    <height>{}</height>
+    <depth>{}</depth>
+</size>
+<segmented>0</segmented>
+    """.format(f_basename, width, height, depth)
+
+    end = """
+</annotation>
+    """
+
+    BBox = np.array(BBox, np.int32)
+    BBox = perspective.order_points(BBox)
+
+    # print(BBox.shape)
+    # assert len(BBox) == 4 and len(BBox.flatten()) == 8
+    x0, y0, delta_x, delta_y = cv2.boundingRect(BBox)
+
+    middle = """
+<object>
+    <name>{}</name>
+    <bndbox>
+        <xmin>{}</xmin>
+        <ymin>{}</ymin>
+        <xmax>{}</xmax>
+        <ymax>{}</ymax>
+    </bndbox>
+</object>
+    """.format(label_name, x0, y0, x0+delta_x, y0+delta_y)
+
+
+    with open(voc_xml_dir+'/'+f_no_suffix+'.xml', 'w') as f:
+        f.write(start)
+        f.writelines(middle)
+        f.write(end)
+
+
+
+
+def generate_dlib_detection_file_from_des(des_dir, only_manual_label=False, change_dir=False, resize=False, generate_voc=False, voc_xml_dir='voc_xml_dir', label_name="object",sample_num=100,
                                           resize_ratio=1.0, resized_dir='resized_frame', new_frame_dir_preffix = 'I_changed_the_dir', detection_file='detection.xml'):
 
 
     all_des_file = preprocess.generate_all_abs_filenames(des_dir)
+
+
+    import random
+    random.shuffle(all_des_file)
+    all_des_file = all_des_file[:sample_num]
+
+
     BBox_list = []
     im_file_list = []
+    im_file_list_new = []
 
     for des_f in all_des_file:
         with open(des_f, 'r') as f_r:
@@ -107,6 +167,7 @@ def generate_dlib_detection_file_from_des(des_dir, only_manual_label=False, chan
             new_file = resized_dir+'/'+f_basename
             cv2.imwrite(new_file, im)
 
+            im_file_list_new.append(os.path.abspath(new_file))
             bbox_0*=resize_ratio
 
         if change_dir:
@@ -124,16 +185,24 @@ def generate_dlib_detection_file_from_des(des_dir, only_manual_label=False, chan
 
     content = []
 
+
     for BBox, im_file in zip(BBox_list, im_file_list):
         content.append(generate_dlib_for_one(BBox, im_file, visualize=False)) # the trick is not show, will change it latter
 
-    import random
-    random.shuffle(content)
-    content = content[:sample_num]
 
     write_content_to_file(content, detection_file)
 
 
+
+    if generate_voc:
+
+        if not os.path.isdir(voc_xml_dir):
+            os.makedirs(voc_xml_dir)
+
+        if resize:
+            im_file_list = im_file_list_new
+        for BBox, im_file in zip(BBox_list, im_file_list):
+            generate_voc_for_one(BBox, im_file, label_name, voc_xml_dir)
 
 
 
@@ -156,19 +225,25 @@ if __name__ == '__main__':
     resized_dir = 'H:/projects/icra_robomaster/codes/DataLabel/video_002_half/frames'
 
 
-    if not os.path.isdir(change_dir):
-        os.makedirs(change_dir)
+    if not os.path.isdir(resized_dir):
+        os.makedirs(resized_dir)
 
-
+    """
     generate_dlib_detection_file_from_des(des_dir, only_manual_label=False, change_dir=True, resize=True,
                                           sample_num=200,
                                           resize_ratio=0.5, resized_dir=resized_dir,
                                           new_frame_dir_preffix=change_dir, detection_file='detection_half.xml')
 
-    """
+   
     change_dir = '/home/miao/dataset/video_002'
     generate_dlib_detection_file_from_des(des_dir, only_manual_label=True, change_dir=True, resize=False,
                                           sample_num=200,
                                           resize_ratio=1.0, resized_dir='',
                                           new_frame_dir_preffix=change_dir, detection_file='detection_manual.xml')
     """
+
+    generate_dlib_detection_file_from_des(des_dir, only_manual_label=False, change_dir=False, resize=True,
+                                          generate_voc=True, voc_xml_dir='voc_xml_dir', label_name="armer",
+                                          sample_num=200,
+                                          resize_ratio=0.5, resized_dir=resized_dir,
+                                          new_frame_dir_preffix='I_changed_the_dir', detection_file='voc_detection.xml')
