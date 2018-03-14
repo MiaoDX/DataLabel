@@ -4,6 +4,9 @@
 
 ## Some existing tools
 
+* [ViTBAT: Video Tracking and Behavior Annotation Tool](https://vitbat.weebly.com/)
+    - I found this a little late, it seems did all the things I needed, however, mine is more adjustable -- with source code to tweak with.
+
 * [Mathworks, Define Ground Truth for Image Collections](https://cn.mathworks.com/help/vision/ug/define-ground-truth-for-image-collections.html)
 * [Labelbox](https://github.com/Labelbox/Labelbox)
 * [FastAnnotationTool](https://github.com/christopher5106/FastAnnotationTool), seems have lots of methods
