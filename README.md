@@ -41,12 +41,12 @@ train with ML detection algorithms
 
 #### NOTES
 
-* the object is out of the scene
+* the object is out of the scene for tracking
+* data format transfer [coco2pascal.py](https://gist.github.com/chicham/6ed3842d0d2014987186)
+
 
 ## TODO
 
-* change format to dlib needed
-* forward and backward tracking for detection
 
 ### Dependencies
 

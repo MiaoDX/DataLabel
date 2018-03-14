@@ -34,7 +34,7 @@ def _variance_of_laplacian(image):
     gray = cv2.cvtColor(image, cv2.COLOR_BGR2GRAY)
     return cv2.Laplacian(gray, cv2.CV_64F).var()
 
-def _is_blur(image, thres=100):
+def _is_blur(_variance_of_laplacian, thres=100):
     """
     Simply detect the image is blur or not, ref https://www.pyimagesearch.com/2015/09/07/blur-detection-with-opencv/
     The `thres` is somewhat casually picked, may need better analyse the images
@@ -42,8 +42,7 @@ def _is_blur(image, thres=100):
     # compute the Laplacian of the image and then return the focus
     # measure, which is simply the variance of the Laplacian
 
-    v_l = _variance_of_laplacian(image)
-    if v_l <= thres:
+    if _variance_of_laplacian <= thres:
         return True
 
     return False
@@ -78,6 +77,7 @@ def generate_init_des(frame_dir, des_dir):
 
 def generate_all_abs_filenames(data_dir):
     files = [os.path.abspath(data_dir+'/'+f) for f in os.listdir(data_dir) if os.path.isfile(data_dir+'/'+f)]
+    files = sorted(files)
     return files
 
 def split_the_abs_filename(abs_filename):
@@ -85,7 +85,7 @@ def split_the_abs_filename(abs_filename):
     f_no_suffix = f_basename.split('.')[0]
     return f_basename, f_no_suffix
 
-def eval_blur(des_dir, write_blur_flag_to_des=False, blur_thres=30, visualize=False):
+def eval_blur_or_write_blur_flag_to_des(des_dir, write_blur_flag_to_des=False, blur_thres=30, visualize=False):
     des_files = generate_all_abs_filenames(des_dir)
     print(len(des_files))
 
@@ -96,31 +96,35 @@ def eval_blur(des_dir, write_blur_flag_to_des=False, blur_thres=30, visualize=Fa
         with open(f, 'r') as f_r:
             info = json_tricks.load(f_r)
 
-        blur_l.append(info['variance_of_laplacian'])
+        v_of_l = info['variance_of_laplacian']
+        blur_l.append(v_of_l)
+
+        im_blur = _is_blur(v_of_l, blur_thres)
+
+        if im_blur:
+
+            blur_num += 1
+
+            if visualize:
+                im = cv2.imread(info['abs_file_name'])
+                cv2.imshow('BLUR', im)
+                cv2.waitKey(20)
 
         if write_blur_flag_to_des:
-
-            im = cv2.imread(info['abs_file_name'])
-            im_blur = _is_blur(im, blur_thres)
-
-            if im_blur:
-                blur_num += 1
-                if visualize:
-                    cv2.imshow('BLUR', im)
-                    cv2.waitKey(20)
 
             with open(f, 'w') as f_w:
                 info['is_blur'] = im_blur
                 json_tricks.dump(info, f_w, sort_keys=True, indent=4)
 
+    print("BLUR RATIO:{}".format(blur_num / len(des_files)))
     import matplotlib.pyplot as plt
     plt.hist(blur_l, bins='auto')  # arguments are passed to np.histogram
     plt.title("Histogram with 'auto' bins")
     plt.show()
 
-    print("BLUR RATIO:{}".format(blur_num/len(blur_l)))
 
-def genera_files_for_manual_labeling_with_labelme(des_dir, no_blur_step=20, blur_step=10):
+
+def genera_files_for_manual_labeling_for_labelme(des_dir, no_blur_step=20, blur_step=10):
     des_files = generate_all_abs_filenames(des_dir)
     print(len(des_files))
 
@@ -160,7 +164,7 @@ if __name__ == '__main__':
     # eval_blur(des_dir=des_dir)
     # eval_blur(des_dir, eval_blur_flag=True, blur_thres=20, visualize=True)
 
-    no_blur_l, blur_l = genera_files_for_manual_labeling_with_labelme(des_dir)
+    no_blur_l, blur_l = genera_files_for_manual_labeling_from_labelme(des_dir)
     print(len(no_blur_l), len(blur_l))
 
 
