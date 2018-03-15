@@ -18,12 +18,8 @@ if __name__ == '__main__':
     parser.add_argument("-b", "--blureval", help="Eval the blur of frames", action="store_true")
     parser.add_argument("-u", "--updateblur", help="Update the blur flag", action="store_true")
 
-    # python pipeline.py --manuallabel --objectname armer
     parser.add_argument("-m", "--manuallabel", help="Generate manual label data to be used for labelme lib",
                         action="store_true")
-
-    parser.add_argument("-n", "--objectname", help="Object name for our dataset", type=str, default="object")
-
 
     parser.add_argument("-x", "--update_des_with_manual_label", help="Update the des files with manual label info",
                         action="store_true")
