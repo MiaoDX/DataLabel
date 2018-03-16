@@ -229,6 +229,8 @@ def generate_dlib_and_voc_detection_file_from_des(des_dir,
 
 
 if __name__ == '__main__':
+    import sys
+    sys.path.append("..")
 
     from conf.conf_loader import des_dir_conf, dlib_dir_conf, voc_dir_conf, base_folder_conf, des_dir_conf_with_tracking
 
@@ -255,7 +257,7 @@ if __name__ == '__main__':
     if not os.path.isdir(resized_dir):
         os.makedirs(resized_dir)
     generate_dlib_and_voc_detection_file_from_des(des_dir_conf,
-                                                  only_manual_label=True,
+                                                  only_manual_label=False,
                                                   voc_xml_dir=voc_xml_dir,
                                                   resize=True, resize_ratio=0.5, resized_dir=resized_dir,
                                                   dlib_detection_file=dlib_detection_file)
