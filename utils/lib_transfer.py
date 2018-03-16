@@ -223,7 +223,7 @@ def generate_dlib_and_voc_detection_file_from_des(des_dir,
 
 if __name__ == '__main__':
 
-    from conf.conf_loader import des_dir_conf, dlib_dir_conf, voc_dir_conf, base_foler_conf
+    from conf.conf_loader import des_dir_conf, dlib_dir_conf, voc_dir_conf, base_folder_conf
 
     # im_file = 'tt/00000.png'
     # json_file = 'tt/0_test.json'
@@ -244,7 +244,7 @@ if __name__ == '__main__':
 
     dlib_detection_file = dlib_dir_conf + '/manual_label_armer_half_size.xml'
     voc_xml_dir = voc_dir_conf + '/manual_label_armer_half_size'
-    resized_dir = base_foler_conf + '/manual_label_armer_half_size'
+    resized_dir = base_folder_conf + '/manual_label_armer_half_size'
     if not os.path.isdir(resized_dir):
         os.makedirs(resized_dir)
     generate_dlib_and_voc_detection_file_from_des(des_dir_conf,
@@ -264,7 +264,7 @@ if __name__ == '__main__':
 
     dlib_detection_file = dlib_dir_conf + '/label_armer_200_half_size.xml'
     voc_xml_dir = voc_dir_conf + '/label_armer_200_half_size'
-    resized_dir = base_foler_conf + '/label_armer_200_half_size'
+    resized_dir = base_folder_conf + '/label_armer_200_half_size'
     if not os.path.isdir(resized_dir):
         os.makedirs(resized_dir)
     generate_dlib_and_voc_detection_file_from_des(des_dir_conf,

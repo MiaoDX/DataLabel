@@ -33,7 +33,7 @@ if __name__ == '__main__':
     if args.split:
         assert os.path.isfile(video_file_conf) and not os.path.exists(frame_dir_conf)
         os.makedirs(frame_dir_conf)
-        split_video(source=video_file_conf, split_dir=frame_dir_conf, im_name_format="{:06d}.png")
+        split_video(source=video_file_conf, split_dir=frame_dir_conf, im_name_format="{:05d}.png")
     elif args.init:
         assert not os.path.exists(des_dir_conf)
         os.makedirs(des_dir_conf)

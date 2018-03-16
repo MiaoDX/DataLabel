@@ -1,20 +1,20 @@
-import path
+import pathlib
 import configparser
 config = configparser.ConfigParser()
 
 
 
-config.read_file(open(path.Path(__file__).parent / 'datalabel.cfg'))
+config.read_file(open(pathlib.Path(__file__).parent / 'datalabel.cfg'))
 
-base_foler_conf = config['PATH']['base_foler']
+base_folder_conf = config['PATH']['base_folder']
 
-video_file_conf = base_foler_conf + config['PATH']['video_file']
-frame_dir_conf = base_foler_conf + 'frames/'
-des_dir_conf = base_foler_conf + 'description/'
-manual_labeled_dir_conf = base_foler_conf + 'manual_labeled/'
-tracking_labeled_dir_conf = base_foler_conf + 'tracking_labeled/'
-dlib_dir_conf = base_foler_conf + 'dlib_conf/'
-voc_dir_conf = base_foler_conf + 'voc_conf/'
+video_file_conf = base_folder_conf + config['PATH']['video_file']
+frame_dir_conf = base_folder_conf + 'frames/'
+des_dir_conf = base_folder_conf + 'description/'
+manual_labeled_dir_conf = base_folder_conf + 'manual_labeled/'
+tracking_labeled_dir_conf = base_folder_conf + 'tracking_labeled/'
+dlib_dir_conf = base_folder_conf + 'dlib_conf/'
+voc_dir_conf = base_folder_conf + 'voc_conf/'
 
 # for pipeline.py
 blurthres_conf = float(config['THRES']['blurthres'])
@@ -27,5 +27,5 @@ label_name_conf = config['LABEL']['label_name']
 
 
 if __name__ == '__main__':
-    print(base_foler_conf)
+    print(base_folder_conf)
     print(video_file_conf)

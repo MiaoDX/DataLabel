@@ -17,6 +17,8 @@
 * [label-V](https://github.com/innovationgarage/label-V), something I would like to do, maybe can make use of it
 * [wkentaro/labelme](https://github.com/wkentaro/labelme), seems nice, no special operations for different platforms
 
+* [dbolkensteyn/vatic.js](https://github.com/dbolkensteyn/vatic.js), one js tool, really impressive
+
 ## Blogs
 
 [A Definitive Guide To Build Training Data For Computer Vision](https://hackernoon.com/a-definitive-guide-to-build-training-data-for-computer-vision-1d1d50b4bf07)
