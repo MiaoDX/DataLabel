@@ -154,6 +154,13 @@ def generate_dlib_and_voc_detection_file_from_des(des_dir,
                                                   voc_xml_dir='voc_xml_dir',
                                                   dlib_detection_file='dlib_detection.xml'):
 
+    assert os.path.isdir(des_dir)
+    assert not os.path.isdir(resized_dir)
+    assert not os.path.isdir(voc_xml_dir)
+    assert not os.path.isfile(dlib_detection_file)
+
+    if resize:
+        os.makedirs(resized_dir)
 
     all_des_file = preprocess.generate_all_abs_filenames(des_dir)
 
@@ -213,8 +220,8 @@ def generate_dlib_and_voc_detection_file_from_des(des_dir,
     write_content_to_file(content_list, dlib_detection_file)
 
 
-    if not os.path.isdir(voc_xml_dir):
-        os.makedirs(voc_xml_dir)
+
+    os.makedirs(voc_xml_dir)
     for BBox_list, label_list, im_file in zip(BBox_list_list, label_list_list, im_file_list):
         generate_voc_for_one(BBox_list, label_list, im_file, voc_xml_dir)
 
@@ -223,7 +230,7 @@ def generate_dlib_and_voc_detection_file_from_des(des_dir,
 
 if __name__ == '__main__':
 
-    from conf.conf_loader import des_dir_conf, dlib_dir_conf, voc_dir_conf, base_folder_conf
+    from conf.conf_loader import des_dir_conf, dlib_dir_conf, voc_dir_conf, base_folder_conf, des_dir_conf_with_tracking
 
     # im_file = 'tt/00000.png'
     # json_file = 'tt/0_test.json'
@@ -240,7 +247,7 @@ if __name__ == '__main__':
                                                   only_manual_label=True,
                                                   voc_xml_dir=voc_xml_dir,
                                                   dlib_detection_file=dlib_detection_file)
-    """
+    
 
     dlib_detection_file = dlib_dir_conf + '/manual_label_armer_half_size.xml'
     voc_xml_dir = voc_dir_conf + '/manual_label_armer_half_size'
@@ -253,7 +260,7 @@ if __name__ == '__main__':
                                                   resize=True, resize_ratio=0.5, resized_dir=resized_dir,
                                                   dlib_detection_file=dlib_detection_file)
 
-    """
+    
     dlib_detection_file = dlib_dir_conf + '/label_armer_200.xml'
     voc_xml_dir = voc_dir_conf + '/label_armer_200'
     generate_dlib_and_voc_detection_file_from_des(des_dir_conf,
@@ -274,3 +281,18 @@ if __name__ == '__main__':
                                                   voc_xml_dir=voc_xml_dir,
                                                   dlib_detection_file=dlib_detection_file)
     """
+
+
+
+    # After tracking
+    sampel_num = 400
+    dlib_detection_file = dlib_dir_conf + '/dlib_armer_{}_half_size.xml'.format(sampel_num)
+    voc_xml_dir = voc_dir_conf + '/voc_armer_{}_half_size'.format(sampel_num)
+    resized_dir = base_folder_conf + '/armer_{}_half_size'.format(sampel_num)
+
+    generate_dlib_and_voc_detection_file_from_des(des_dir_conf_with_tracking,
+                                                  sample_num=sampel_num,
+                                                  only_manual_label=False,
+                                                  voc_xml_dir=voc_xml_dir,
+                                                  resize=True, resize_ratio=0.5, resized_dir=resized_dir,
+                                                  dlib_detection_file=dlib_detection_file)

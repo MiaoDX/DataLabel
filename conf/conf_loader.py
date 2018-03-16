@@ -10,7 +10,8 @@ base_folder_conf = config['PATH']['base_folder']
 
 video_file_conf = base_folder_conf + config['PATH']['video_file']
 frame_dir_conf = base_folder_conf + 'frames/'
-des_dir_conf = base_folder_conf + 'description/'
+des_dir_conf = base_folder_conf + 'description_with_tracking/'
+des_dir_conf_with_tracking = base_folder_conf + 'description_with_tracking/'
 manual_labeled_dir_conf = base_folder_conf + 'manual_labeled/'
 tracking_labeled_dir_conf = base_folder_conf + 'tracking_labeled/'
 dlib_dir_conf = base_folder_conf + 'dlib_conf/'
