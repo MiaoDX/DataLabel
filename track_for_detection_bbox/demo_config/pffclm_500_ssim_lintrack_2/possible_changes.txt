@@ -1,0 +1,29 @@
+https://github.com/abhineet123/MTF/tree/master/Config
+
+mtf.cfg
+
+pre_proc_hist_eq, perform histogram equalization as part of pre processing
+
+show_proc_img, Show the pre processed images in a separate window. DIFFERENCE?	
+
+
+mtf_sm
+
+Third party:
+
+replace `pffclm_500_ssim_lintrack_2`
+
+mtf_sm
+dsst, too slow, 0.32fps
+kcf, 0.8-0.9
+cmt, break often
+tld, not so good
+rct, okay
+mil, okay
+strk, failed to run
+dft, F
+frg, 5-6fps, rect, and no size change
+pfsl3, F, not so sure why since it was compiled
+
+mtf_am
+mcmi, too slow, and not good
