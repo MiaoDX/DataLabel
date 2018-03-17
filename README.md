@@ -49,6 +49,11 @@ train with ML detection algorithms
 
 ## TODO
 
+It seems that, we need a UI, really.
+
+Possible lib:
+
+* [jdoepfert/roipoly.py](https://github.com/jdoepfert/roipoly.py), Select a polygonal region of interest (ROI) with python and matplotlib.
 
 ### Dependencies
 
