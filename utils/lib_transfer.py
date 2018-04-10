@@ -234,10 +234,6 @@ if __name__ == '__main__':
 
     from conf.conf_loader import des_dir_conf, dlib_dir_conf, voc_dir_conf, base_folder_conf, des_dir_conf_with_tracking
 
-    # im_file = 'tt/00000.png'
-    # json_file = 'tt/0_test.json'
-    # faked_labelme_json(im_file, json_file, label_name="HAHA")
-
 
     if not os.path.isdir(dlib_dir_conf):
         os.makedirs(dlib_dir_conf)

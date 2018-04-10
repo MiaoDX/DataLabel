@@ -23,8 +23,8 @@ if __name__ == '__main__':
 
     parser.add_argument("-x", "--update_des_with_manual_label", help="Update the des files with manual label info",
                         action="store_true")
-    parser.add_argument("-y", "--update_des_with_track_label", help="Update the des files with tracking label info",
-                        action="store_true")
+    # parser.add_argument("-y", "--update_des_with_track_label", help="Update the des files with tracking label info",
+    #                     action="store_true")
 
 
 

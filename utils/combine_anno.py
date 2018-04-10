@@ -92,19 +92,12 @@ def assert_voc_xml_file_valid(voc_xml_f):
     return True
 
 
-def combine_voc_files_pipeline():
+def combine_voc_files_pipeline(folders, combine_folder, possible_wrong_folder):
     """
     We need to abandon these with wrong bounding box, https://github.com/thtrieu/darkflow/issues/151
     :return:
     """
-    voc_floder = 'voc_armer_400_half_size'
-    d_f = lambda x: "/home/miao/dataset/armer_video/{}/voc_conf/{}/".format(x, voc_floder)
-    list_d = ['v001', 'v002', 'v003', 'v004', 'v005']
-    folders = [d_f(d) for d in list_d]
-    print(folders)
 
-    combine_folder = '/home/miao/dataset/armer_video/voc_all/with_tracking_4000/'
-    possible_wrong_folder = '/home/miao/dataset/armer_video/voc_all/with_tracking_4000_possible_wrong/'
 
     assert not os.path.isdir(combine_folder)
     assert not os.path.isdir(possible_wrong_folder)
@@ -162,4 +155,20 @@ def change_folder_prefix_pipeline():
 
 if __name__ == '__main__':
 
-    combine_voc_files_pipeline()
+
+
+    # change_folder_prefix_pipeline()
+
+
+
+
+    voc_floder = 'voc_armer_400_half_size'
+    d_f = lambda x: "/home/miao/dataset/armer_video/{}/voc_conf/{}/".format(x, voc_floder)
+    list_d = ['v001', 'v002', 'v003', 'v004', 'v005']
+    folders = [d_f(d) for d in list_d]
+    print(folders)
+
+    combine_folder = '/home/miao/dataset/armer_video/voc_all/with_tracking_4000/'
+    possible_wrong_folder = '/home/miao/dataset/armer_video/voc_all/with_tracking_4000_possible_wrong/'
+
+    combine_voc_files_pipeline(folders, combine_folder, possible_wrong_folder)

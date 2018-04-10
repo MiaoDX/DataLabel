@@ -29,8 +29,6 @@ def train(training_xml_path, model_file="detector.svm"):
     options.detection_window_size = 4096 #(32, 32)
     # options.upsample_limit = 8
 
-    # training_xml_path = os.path.join(train_folder, "testing_copy.xml") # training
-    # testing_xml_path = os.path.join(train_folder, "testing.xml")
 
     # This function does the actual training.  It will save the final detector to
     # detector.svm.  The input is an XML file that lists the images in the training
@@ -50,12 +48,7 @@ def train(training_xml_path, model_file="detector.svm"):
     print("")  # Print blank line to create gap from previous output
     print("Training accuracy: {}".format(
         dlib.test_simple_object_detector(training_xml_path, model_file)))
-    # However, to get an idea if it really worked without overfitting we need to
-    # run it on images it wasn't trained on.  The next line does this.  Happily, we
-    # see that the object detector works perfectly on the testing images.
 
-    # print("Testing accuracy: {}".format(
-    #     dlib.test_simple_object_detector(testing_xml_path, "detector.svm")))
 
 
 def test(test_folder, model_file="detector.svm"):
@@ -98,45 +91,6 @@ def test(test_folder, model_file="detector.svm"):
         # import time
         # time.sleep(0.001)
 
-def test_show_with_cv(test_folder, model_file="detector.svm"):
-    # Now let's use the detector as you would in a normal application.  First we
-    # will load it from disk.
-    detector = dlib.simple_object_detector(model_file)
-    # print(dir(detector))
-
-    # We can look at the HOG filter we learned.  It should look like a face.  Neat!
-    win_det = dlib.image_window()
-    win_det.set_image(detector)
-
-    # Now let's run the detector over the images in the faces folder and display the
-    # results.
-    print("Showing detections on the images in the faces folder...")
-    # cv2.namedWindow("Tracking")
-
-    for f in glob.glob(os.path.join(test_folder, "*")):
-        print("Processing file: {}".format(f))
-
-        img = cv2.imread(f)
-        img = cv2.cvtColor(img, cv2.COLOR_BGR2RGB)
-
-        dets = detector(img)
-
-        # print("Number of faces detected: {}".format(len(dets)))
-
-
-        for k, d in enumerate(dets):
-            print("Detection {}: Left: {} Top: {} Right: {} Bottom: {}".format(
-                k, d.left(), d.top(), d.right(), d.bottom()))
-            rect = [[d.left(), d.top()], [d.right(), d.top()], [d.right(), d.bottom()], d.left(), d.bottom()]
-
-            print(rect)
-            cv2.rectangle(img, (d.left(), d.top()), (d.right(), d.bottom()), (0,0,255))
-
-        cv2.imshow('Tracking', img)
-        cv2.waitKey(1)
-
-    cv2.destroyAllWindows()
-
 
 def test_show_with_cv_one(img, model_file="detector.svm"):
     # Now let's use the detector as you would in a normal application.  First we
@@ -177,14 +131,12 @@ def pipeline_inference(img):
     return output
 
 if __name__ == '__main__':
+    from conf.conf_loader import des_dir_conf
 
     # In this example we are going to train a face detector based on the small
     # faces dataset in the examples/faces directory.  This means you need to supply
     # the path to this faces folder as a command line argument so we will know
     # where it is.
-
-    #train_folder = '/home/miao/dataset/video_002_half/'
-    #preffix = 'detection_half'
 
     train_folder = 'H:/projects/icra_robomaster/codes/DataLabel/pipeline_test/'
     preffix = 'armer_200'
