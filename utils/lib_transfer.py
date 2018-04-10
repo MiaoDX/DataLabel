@@ -246,7 +246,7 @@ if __name__ == '__main__':
                                                   voc_xml_dir=voc_xml_dir,
                                                   dlib_detection_file=dlib_detection_file)
 
-    
+   
     dlib_detection_file = dlib_dir_conf + '/manual_label_armer_half_size.xml'
     voc_xml_dir = voc_dir_conf + '/manual_label_armer_half_size'
     resized_dir = base_folder_conf + '/manual_label_armer_half_size'
