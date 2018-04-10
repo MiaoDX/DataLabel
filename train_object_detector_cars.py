@@ -7,6 +7,10 @@ import numpy as np
 import cv2
 
 def train(training_xml_path, model_file="detector.svm"):
+
+    assert os.path.isfile(training_xml_path)
+    assert not os.path.isfile(model_file)
+
     # Now let's do the training.  The train_simple_object_detector() function has a
     # bunch of options, all of which come with reasonable default values.  The next
     # few lines goes over some of these options.
@@ -51,7 +55,8 @@ def train(training_xml_path, model_file="detector.svm"):
 
 
 
-def test(test_folder, model_file="detector.svm"):
+def dlib_test(test_folder, model_file="detector.svm"):
+    from utils.preprocess import  generate_all_abs_filenames
     # Now let's use the detector as you would in a normal application.  First we
     # will load it from disk.
     detector = dlib.simple_object_detector(model_file)
@@ -64,7 +69,8 @@ def test(test_folder, model_file="detector.svm"):
     # results.
     print("Showing detections on the images in the faces folder...")
     win = dlib.image_window()
-    for f in glob.glob(os.path.join(test_folder, "*")):
+    files = generate_all_abs_filenames(test_folder)
+    for f in files:
         # print("Processing file: {}".format(f))
 
         img = cv2.imread(f)
@@ -92,7 +98,7 @@ def test(test_folder, model_file="detector.svm"):
         # time.sleep(0.001)
 
 
-def test_show_with_cv_one(img, model_file="detector.svm"):
+def show_with_cv_one(img, model_file="detector.svm"):
     # Now let's use the detector as you would in a normal application.  First we
     # will load it from disk.
     detector = dlib.simple_object_detector(model_file)
@@ -124,39 +130,44 @@ def test_show_with_cv_one(img, model_file="detector.svm"):
 
 def pipeline_inference(img):
     global save_model_file
-    img = test_show_with_cv_one(img, model_file=save_model_file)
+    img = show_with_cv_one(img, model_file=save_model_file)
     cv2.imshow("A", img)
     cv2.waitKey(1)
     output = img
     return output
 
 if __name__ == '__main__':
-    from conf.conf_loader import des_dir_conf
+
+    from conf.conf_loader import dlib_dir_conf, video_file_conf, frame_dir_conf
+    from utils.preprocess import split_the_abs_filename
 
     # In this example we are going to train a face detector based on the small
     # faces dataset in the examples/faces directory.  This means you need to supply
     # the path to this faces folder as a command line argument so we will know
     # where it is.
 
-    train_folder = 'H:/projects/icra_robomaster/codes/DataLabel/pipeline_test/'
-    preffix = 'armer_200'
+    xml_f = 'dlib_armer_400_half_size.xml'
+
+    training_xml_path = dlib_dir_conf+'/'+xml_f
+    save_model_file = dlib_dir_conf+'/'+xml_f[:-4] + '.svm'
 
 
-    training_xml_path = train_folder + preffix + '.xml'
-    save_model_file = train_folder + preffix + '.svm'
 
     # train(training_xml_path, save_model_file)
 
 
-    # base_dir_test = 'H:/projects/icra_robomaster/codes/DataLabel/video_002/'
-    base_dir_test = '/home/miao/dataset/video_002/'
-    frame_dir = base_dir_test + 'frames'
+    # dlib_test(frame_dir_conf, model_file=save_model_file)
 
-    # test(frame_dir, model_file=save_model_file)
-    # test_show_with_cv(frame_dir, model_file=save_model_file)
+
+
+    # test_v_f = video_file_conf # can change
+    test_v_f = '/home/miao/dataset/armer_video/v001/001.mp4'
 
     from moviepy.editor import VideoFileClip
-    video_output = 'frame_002_with_{}.mp4'.format(preffix)
-    clip1 = VideoFileClip(train_folder+"/002.mp4")
+
+    f_basename, f_no_suffix = split_the_abs_filename(test_v_f)
+    video_output = '{}/{}_result.mp4'.format(dlib_dir_conf, f_no_suffix)
+
+    clip1 = VideoFileClip(test_v_f)
     clip = clip1.fl_image(pipeline_inference)
     clip.write_videofile(video_output, audio=False)
