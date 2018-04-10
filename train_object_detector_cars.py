@@ -194,8 +194,9 @@ if __name__ == '__main__':
 
     from utils.preprocess import split_the_abs_filename
 
-    dlib_f = 'manual_label_armer_half_size.xml'
-    d_f = lambda x: "/home/miao/dataset/armer_video/{}/dlib_conf/{}".format(x, dlib_f)
+    """
+    dlib_f = 'manual_label_armer.xml'
+    d_f = lambda x: "/home/rm/icra18_dji/dataset/rm_car/train/{}/dlib_conf/{}".format(x, dlib_f)
     list_d = ['v001', 'v002', 'v003', 'v004', 'v005']
     xml_files = [d_f(d) for d in list_d]
     print(xml_files)
@@ -205,16 +206,21 @@ if __name__ == '__main__':
     # combine_dlib_xml(files=xml_files, combine_f=combine_f)
     training_xml_path = combine_f
     save_model_file = combine_f[:-4] + '.svm'
+    """
 
-    # train(training_xml_path, save_model_file)
+    from conf.conf_loader import dlib_dir_conf, video_file_conf
+    training_xml_path = dlib_dir_conf+'/dlib_armer_600_half_size.xml'
+    save_model_file = training_xml_path[:-4] + '.svm'
+
+    train(training_xml_path, save_model_file)
 
     # dlib_test(frame_dir_conf, model_file=save_model_file)
 
-    test_v_dir = '/home/miao/dataset/armer_video/v001'
-    test_v_f = test_v_dir+'/001.mp4'
+    """
+    test_v_f = '/home/rm/icra18_dji/dataset/rm_car/test/phone_1.mp4'
+    # test_v_f = video_file_conf
 
-    f_basename, f_no_suffix = split_the_abs_filename(test_v_f)
-    video_output = '{}/{}_dlib_detection.mp4'.format(test_v_dir, f_no_suffix)
+    video_output = test_v_f[: -4] + '_dlib_detection.mp4'
 
 
     # Now let's use the detector as you would in a normal application.  First we
@@ -225,3 +231,4 @@ if __name__ == '__main__':
     clip1 = VideoFileClip(test_v_f)
     clip = clip1.fl_image(pipeline_inference)
     clip.write_videofile(video_output, audio=False)
+    """

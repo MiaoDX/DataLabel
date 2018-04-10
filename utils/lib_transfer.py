@@ -15,7 +15,7 @@ except ImportError:
 
 
 def faked_labelme_json(im_file, json_file, label_name='AA'):
-    example_json = Path(__file__).parent / 'labelme_example.json'
+    example_json = str(Path(__file__).parent / 'labelme_example.json')
     with open(example_json, 'r') as f:
         info = json.load(f)
 
@@ -232,7 +232,7 @@ if __name__ == '__main__':
     import sys
     sys.path.append("..")
 
-    from conf.conf_loader import des_dir_conf, dlib_dir_conf, voc_dir_conf, base_folder_conf, des_dir_conf_with_tracking
+    from conf.conf_loader import des_dir_conf, dlib_dir_conf, voc_dir_conf, base_folder_conf
 
 
     if not os.path.isdir(dlib_dir_conf):
@@ -245,8 +245,8 @@ if __name__ == '__main__':
                                                   only_manual_label=True,
                                                   voc_xml_dir=voc_xml_dir,
                                                   dlib_detection_file=dlib_detection_file)
-    
 
+    
     dlib_detection_file = dlib_dir_conf + '/manual_label_armer_half_size.xml'
     voc_xml_dir = voc_dir_conf + '/manual_label_armer_half_size'
     resized_dir = base_folder_conf + '/manual_label_armer_half_size'
@@ -283,12 +283,12 @@ if __name__ == '__main__':
 
 
     # After tracking
-    sampel_num = 400
+    sampel_num = 600
     dlib_detection_file = dlib_dir_conf + '/dlib_armer_{}_half_size.xml'.format(sampel_num)
     voc_xml_dir = voc_dir_conf + '/voc_armer_{}_half_size'.format(sampel_num)
     resized_dir = base_folder_conf + '/armer_{}_half_size'.format(sampel_num)
 
-    generate_dlib_and_voc_detection_file_from_des(des_dir_conf_with_tracking,
+    generate_dlib_and_voc_detection_file_from_des(des_dir_conf,
                                                   sample_num=sampel_num,
                                                   only_manual_label=False,
                                                   voc_xml_dir=voc_xml_dir,

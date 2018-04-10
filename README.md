@@ -59,3 +59,12 @@ Possible lib:
 
 * dlib
 * labelme
+
+
+* scipy
+* preprocess
+* tqdm
+* scikit-image
+
+* json_tricks
+* imutils

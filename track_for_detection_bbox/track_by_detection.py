@@ -148,13 +148,13 @@ def show_all_the_bbox(des_dir, global_tracker_):
         if 'manual_label' not in info: # skip no label files
             img = cv2.putText(img, "ID:{:5d}/{:5d} {} Label".format(i, frame_length, "NO"), (15, 15),
                               cv2.FONT_HERSHEY_COMPLEX_SMALL, 1, (255, 0, 0))
-            show_time = 2
+            show_time = 1
 
         elif 'failed_to_track' in info and info['failed_to_track']:
             input('press to continue')
             img = cv2.putText(img, "ID:{:5d}/{:5d} {}".format(i, frame_length, "failed_to_track"), (15, 15),
                               cv2.FONT_HERSHEY_COMPLEX_SMALL, 1, (255, 0, 0))
-            show_time = 2
+            show_time = 1
 
         else:
             bbox = info['BBox_list'][0]
@@ -177,7 +177,7 @@ def show_all_the_bbox(des_dir, global_tracker_):
                 img = cv2.putText(img, "ID:{:5d}/{:5d} {} Label".format(i, frame_length, "Tracking") , (15, 15),
                             cv2.FONT_HERSHEY_COMPLEX_SMALL, 1, (255, 0, 0))
 
-            show_time = 20
+            show_time = 2
 
         # display the image
         cv2.namedWindow("Image", cv2.WINDOW_NORMAL)
